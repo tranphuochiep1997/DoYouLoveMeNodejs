@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>DoYouLoveMe</title>
+</head>
+<body>
+  <div class="container" style="display: flex; flex-direction: column;align-items: center; justify-content: center">
+    <H1 style="text-align: center">Conversation</H1>
+    <div style="height: 250px;width: 500px;border: 0.5px solid brown; overflow-y: scroll; overflow-wrap: break-word" id="chatbox">
+      <p>First message</p>
+      <% messages.forEach(message => { %>
+        <p><%= message %></p>
+      <% }) %>
+    </div>
+    <div style="text-align: center; margin-top: 20px">
+      <input id="input-message" type="text" placeholder="Tell some thing" />
+      <button type="button" id="send-message">Send</button>
+    </div>
+  </div>
+
+  <!--JS-->
+  <!-- <script src="/public/javascripts/jquery-3.3.1.min.js"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    $("#send-message").click(()=>{
+      console.log("Clicked!");
+      let inputMessage = $("#input-message").val();
+      console.log(inputMessage);
+      if (inputMessage){
+        $("#chatbox").append(inputMessage + "<br>");
+      }
+    })
+  </script>
+</body>
+</html>
