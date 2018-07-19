@@ -1,10 +1,12 @@
 const Controller = require("./Controller");
 const UserService = require("../services/UserService");
+const FriendService = require("../services/FriendService");
 
 class UserController extends Controller {
   constructor(){
     super();
     this.UserService = new UserService;
+    this.FriendService = new FriendService;
   }
   async postUser(req, res){
     let result = await this.UserService.createNewUser(req.body);
@@ -22,6 +24,14 @@ class UserController extends Controller {
   }
   async getUserByFacebookId(req, res){
     let result = await this.UserService.getUserByFacebookId(req.params.id);
+    if (!result.error){
+      return this.successResponse(res, result);
+    }
+    return this.errorResponse(res, result);
+  }
+  async getAllFriendsByFacebookId(req, res){
+    let status = req.query.status || null;
+    let result = await this.FriendService.getAllFriendsByFacebookId(req.params.id, {status: status});
     if (!result.error){
       return this.successResponse(res, result);
     }

@@ -6,7 +6,6 @@ class UserRepository {
     this.UserModel = UserModel;
   }
   async add({name = "", facebookId, age = null, gender = null, avartar = ""}){
-    
     return await this.UserModel.create({
       name, 
       facebookId, 
@@ -32,7 +31,13 @@ class UserRepository {
     return await this.UserModel.findByIdAndUpdate(id, user);
   }
   async updateByFacebookId(facebookId, user){
-    return await this.UserModel.findOneAndUpdate({facebookId: facebookId}, user, {new: true});
+    let userWithoutFacebookId = {
+      name: user.name, 
+      age: user.age, 
+      gender: user.gender, 
+      avartar: user.avartar
+    }
+    return await this.UserModel.findOneAndUpdate({facebookId: facebookId}, userWithoutFacebookId, {new: true});
   }
 }
 

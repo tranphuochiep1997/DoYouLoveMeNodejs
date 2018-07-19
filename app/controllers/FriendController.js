@@ -13,6 +13,20 @@ class FriendController extends Controller {
     }
     return this.errorResponse(res, result);
   }
+  async getFriendById(req, res) {
+    let result = await this.FriendService.getFriendById(req.params.id);
+    if (!result.error){
+      return this.successResponse(res, result);
+    }
+    return this.errorResponse(res, result);
+  }
+  async putFriend(req, res){
+    let result = await this.FriendService.updateFriend(req.params.id, req.body);
+    if (!result.error){
+      return this.successResponse(res, result);
+    }
+    return this.errorResponse(res, result);
+  }
 }
 
 module.exports = FriendController;

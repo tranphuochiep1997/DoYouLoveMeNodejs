@@ -16,13 +16,15 @@ const friendSchema = new Schema({
   status: {
     // accepted: message accepted
     // pending: mesage is waiting for accept
+    // received: user is received a message
     type: String,
     required: true
   },
   startDating: {
-    type: Date
+    type: Date,
+    default: null
   }
 }, {collection: "Friend"});
-friendSchema.index({relatingUserId: 1, relatedUserId: 1}, {unique: true})
+friendSchema.index({relatingUserId: 1, relatedUserId: 1}, {unique: true});
 //Export
 module.exports = mongoose.model("Friend", friendSchema);

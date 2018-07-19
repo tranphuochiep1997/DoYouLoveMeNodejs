@@ -13,6 +13,9 @@ userRouter
   .get("/:id", (req, res)=>{
     UserController.getUserByFacebookId(req, res);
   })
+  .get("/:id/friends", (req, res)=>{
+    UserController.getAllFriendsByFacebookId(req, res);
+  })
   .get("/", (req, res)=>{
     UserController.getAllUser(req, res);
   })

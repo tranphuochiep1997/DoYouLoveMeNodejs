@@ -9,14 +9,18 @@ class UserService {
       let {facebookId} = body;
       // Check existed User
       const existedUser = await this.UserRepository.getByFacebookId(facebookId);
-      if (!existedUser){
-        const createdUser = await this.UserRepository.add(body);
-        if (createdUser){
-          return errorCode.success;
-        }
+      if (existedUser) {
+        return errorCode.user_existed;
+      }
+      const createdUser = await this.UserRepository.add(body);
+      if (!createdUser) {
         return errorCode.unexpected_error;
       }
-      return errorCode.user_existed;
+      return {
+        error: errorCode.success.error, 
+        message: errorCode.success.message,
+        data: createdUser
+      } ;
     }catch(err){
       return errorCode.unexpected_error;
     }
@@ -25,8 +29,12 @@ class UserService {
     try {
       let updatedUser = await this.UserRepository.updateByFacebookId(id, body);
       if (updatedUser){
-        errorCode.success.data = updatedUser;
-        return errorCode.success;
+        let success = {
+          error: errorCode.success.error,
+          message: errorCode.success.message,
+          data: updatedUser
+        };
+        return success;
       }
       return errorCode.user_not_exist;
     }catch(err){
@@ -38,13 +46,21 @@ class UserService {
     if (!user){
       return errorCode.user_not_exist;
     }
-    errorCode.success.data = user;
-    return errorCode.success;
+    let success = {
+      error: errorCode.success.error,
+      message: errorCode.success.message,
+      data: user
+    }
+    return success;
   }
   async getAllUser(page){
     const users = await this.UserRepository.getAll(page);
-    errorCode.success.data = users;
-    return errorCode.success;
+    let success = {
+      error: errorCode.success.error,
+      message: errorCode.success.message,
+      data: users
+    }
+    return success;
   }
 }
 

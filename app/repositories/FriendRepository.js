@@ -12,15 +12,22 @@ class FriendRepository {
       startDating
     });
   }
+  async updateById(id, friend){
+    let {status, startDating} = friend;
+    return await this.FriendModel.findByIdAndUpdate(id, {status, startDating}, {new: true});
+  }
   async getById(id){
     return await this.FriendModel.findById(id);
   }
-  async getByFacebookId(facebookId){
-    return await this.FriendModel.findOne({facebookId: facebookId});
+  async getFriendByPairOfFacebookId({relatingUserId, relatedUserId}){
+    return await this.FriendModel.findOne({relatingUserId, relatedUserId});
   }
   // Get all friends by facebook id
-  async getAllFriendsByFacebookId(facebookId){
+  async getAllFriendsByFacebookId(facebookId, {status = null}){
+    if (!status){
     return await this.FriendModel.find({relatingUserId: facebookId});
+    }
+    return await this.FriendModel.find({relatingUserId: facebookId, status: status});
   }
   async deleteFriend(friendId) {
     return await this.FriendModel.findByIdAndRemove(friendId);

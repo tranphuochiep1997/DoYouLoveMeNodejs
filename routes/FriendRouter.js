@@ -7,5 +7,11 @@ friendRouter
   .post("/", (req, res)=>{
     friendController.postFriend(req, res);
   })
+  .put("/:id", (req, res)=>{
+    friendController.putFriend(req, res);
+  })
+  .get("/:id", (req, res)=>{
+    friendController.getFriendById(req, res);
+  })
 
 module.exports = friendRouter;
