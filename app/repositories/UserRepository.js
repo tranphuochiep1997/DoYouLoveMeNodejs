@@ -1,17 +1,21 @@
 const UserModel = require("../models/UserModel");
 let {LIMIT} = require('../../config');
+const getPictureUrlFacebook = require("../helpers/getPictureUrlFacebook");
 
 class UserRepository {
   constructor(){
     this.UserModel = UserModel;
   }
-  async add({name = "", facebookId, age = null, gender = null, avartar = ""}){
+  async add({name = "", facebookId, about="", status="", birthday = null, gender = null, email=null, picture=null}){
     return await this.UserModel.create({
-      name, 
-      facebookId, 
-      age, 
-      gender, 
-      avartar
+      name,
+      facebookId,
+      about,
+      status,
+      birthday,
+      gender, // 0: female, 1: male, 2: undefined
+      email,
+      picture: picture || getPictureUrlFacebook(facebookId)
     });
   }
   async getById(id){
@@ -31,12 +35,7 @@ class UserRepository {
     return await this.UserModel.findByIdAndUpdate(id, user);
   }
   async updateByFacebookId(facebookId, user){
-    let userWithoutFacebookId = {
-      name: user.name, 
-      age: user.age, 
-      gender: user.gender, 
-      avartar: user.avartar
-    }
+    let {facebookId: x, ...userWithoutFacebookId} = user;
     return await this.UserModel.findOneAndUpdate({facebookId: facebookId}, userWithoutFacebookId, {new: true});
   }
 }

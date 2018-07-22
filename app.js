@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const {PORT_CONFIG, MONGODB_URL} = require('./config');
 const PORT = process.env.PORT || PORT_CONFIG;
+const trimParam = require('./app/middlewares/TrimParameter');
 const cors = require('cors');
 const app = express();
 const server = require('http').createServer(app);
@@ -31,6 +32,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+app.use(trimParam);
 app.set('views', './views') // specify the views directory
 app.set('view engine', 'ejs') // register the template engine
 

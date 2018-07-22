@@ -22,6 +22,7 @@ class UserService {
         data: createdUser
       } ;
     }catch(err){
+      console.log(err);
       return errorCode.unexpected_error;
     }
   }
@@ -38,6 +39,7 @@ class UserService {
       }
       return errorCode.user_not_exist;
     }catch(err){
+      console.log(err);
       return errorCode.unexpected_error;
     }
   }

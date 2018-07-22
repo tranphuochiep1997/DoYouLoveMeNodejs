@@ -4,13 +4,16 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   name: String,
+  about: String,
+  status: String,
   facebookId: {
     type: String,
     unique: true
   },
-  age: Number,
+  birthday: Date,
+  email: String,
   gender: Number, // 0: female, 1: male, 2: undefined
-  avatar: String
+  picture: String
 }, {collection: "User"});
 
 //Export
