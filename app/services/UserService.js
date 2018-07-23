@@ -44,25 +44,37 @@ class UserService {
     }
   }
   async getUserByFacebookId(id){
-    const user = await this.UserRepository.getByFacebookId(id);
-    if (!user){
-      return errorCode.user_not_exist;
+    try {
+      const user = await this.UserRepository.getByFacebookId(id);
+      if (!user){
+        return errorCode.user_not_exist;
+      }
+      let success = {
+        error: errorCode.success.error,
+        message: errorCode.success.message,
+        data: user
+      }
+      return success;
+    } catch(err){
+      console.log(err);
+      return errorCode.unexpected_error;
     }
-    let success = {
-      error: errorCode.success.error,
-      message: errorCode.success.message,
-      data: user
-    }
-    return success;
+    
   }
   async getAllUser(page){
-    const users = await this.UserRepository.getAll(page);
-    let success = {
-      error: errorCode.success.error,
-      message: errorCode.success.message,
-      data: users
+    try {
+      const users = await this.UserRepository.getAll(page);
+      let success = {
+        error: errorCode.success.error,
+        message: errorCode.success.message,
+        data: users
+      }
+      return success;
+    } catch(err){
+      console.log(err);
+      return errorCode.unexpected_error;
     }
-    return success;
+    
   }
 }
 

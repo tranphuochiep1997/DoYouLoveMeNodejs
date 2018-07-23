@@ -6,6 +6,7 @@ class FriendService {
     this.UserRepository = new UserRepository();
   }
   async makeFriend(body){
+    try {
     const {relatingUserId, relatedUserId} = body;
     if (relatingUserId == relatedUserId) {
       return errorCode.friend_itself;
@@ -38,8 +39,14 @@ class FriendService {
       this.FriendRepository.deleteFriend(relatedFriendCreated._id);
     }
     return errorCode.unexpected_error;
+
+    }catch(err){
+      console.log(err);
+      return errorCode.unexpected_error;
+    }
   }
   async getAllFriendsByFacebookId(facebookId, {status = null}){
+    try {
     const user = await this.UserRepository.getByFacebookId(facebookId);
     if (!user) {
       return errorCode.user_not_exist;
@@ -51,8 +58,13 @@ class FriendService {
       data: friends
     }
     return success;
+    } catch(err){
+      console.log(err);
+      return errorCode.unexpected_error;
+    }
   }
   async getFriendById(id){
+    try {
     const friend = await this.FriendRepository.getById(id);
     if (!friend) {
       return errorCode.user_not_exist;
@@ -60,8 +72,13 @@ class FriendService {
     let success = errorCode.success;
     success.data = friend;
     return success;
+  } catch(err){
+    console.log(err);
+    return errorCode.unexpected_error;
+  }
   }
   async updateFriend(id, body){
+    try {
     const friend = await this.FriendRepository.getById(id);
     if (!friend) {
       return errorCode.user_not_exist;
@@ -70,6 +87,10 @@ class FriendService {
     let success = errorCode.success;
     success.data = updatedFriend;
     return success;
+  }catch(err){
+    console.log(err);
+    return errorCode.unexpected_error;
+  }
   }
 }
 
