@@ -9,7 +9,7 @@ class Controller {
     status = status || 200;
     message = message || 'success';
     data = data || null;
-    return res.json({
+    return res.status(status).json({
       error,
       data,
       message,

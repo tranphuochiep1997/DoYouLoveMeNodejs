@@ -4,9 +4,9 @@ class MessageRepository {
   constructor(){
     this.MessageModel = MessageModel;
   }
-  async add({friendId, body, sender}){
+  async add({roomId, body, sender}){
     return await this.MessageModel.create({
-      friendId,
+      roomId,
       body,
       sender
     });
@@ -14,8 +14,8 @@ class MessageRepository {
   async getById(id){
     return await this.MessageModel.findById(id);
   }
-  async getAllMessagesByFriendId(friendId){
-    return await this.MessageModel.find({friendId: friendId}, null, {sort: {_id: -1}});
+  async getAllMessagesByRoomId(roomId){
+    return await this.MessageModel.find({roomId: roomId}, null, {sort: {_id: 1}});
   }
   async update(id, body){
     return await this.MessageModel.findByIdAndUpdate(id, body);

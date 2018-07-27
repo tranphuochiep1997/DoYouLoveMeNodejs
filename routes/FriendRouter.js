@@ -13,5 +13,6 @@ friendRouter
   .get("/:id", (req, res)=>{
     friendController.getFriendById(req, res);
   })
+  
 
 module.exports = friendRouter;

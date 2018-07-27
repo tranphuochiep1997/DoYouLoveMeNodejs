@@ -14,9 +14,10 @@ const friendSchema = new Schema({
     index: true
   },
   status: {
+    // justCreated: just click, but haven't send any message
     // accepted: message accepted
     // pending: mesage is waiting for accept
-    // received: user is received a message
+    // received: user is received a message but haven't accepted
     type: String,
     required: true
   },

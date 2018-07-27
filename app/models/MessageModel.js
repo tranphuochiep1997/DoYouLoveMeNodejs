@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
-  friendId: {
-    type: Schema.Types.ObjectId,
-    ref: "Friend",
+  roomId: { // equal friend Id
+    // type: Schema.Types.ObjectId, 
+    type: String, // Change this when login with user name password
+    ref: "Room",
     required: true
   }, 
   sender: { // facebookId
