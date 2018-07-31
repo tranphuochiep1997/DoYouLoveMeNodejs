@@ -22,9 +22,7 @@ server.listen(PORT, function() {
 });
 
 // -- Import repository
-const RoomRepository = require("./app/repositories/RoomRepository");
 const MessageRepository = require("./app/repositories/MessageRepository");
-const roomRepository = new RoomRepository();
 const messageRepository = new MessageRepository();
 
 // -- Import router

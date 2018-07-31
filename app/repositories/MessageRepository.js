@@ -16,7 +16,7 @@ class MessageRepository {
     return await this.MessageModel.findById(id);
   }
   async getAllMessagesByRoomId({roomId, page=0}){
-    return await this.MessageModel.find({roomId: roomId}, null, {limit: LIMIT_MESSAGE, skip: page*LIMIT_MESSAGE, sort: {_id: -1}});
+    return await this.MessageModel.find({roomId: roomId}, null, {sort: {_id: -1}, limit: LIMIT_MESSAGE, skip: page*LIMIT_MESSAGE});
   }
   async update(id, body){
     return await this.MessageModel.findByIdAndUpdate(id, body);
