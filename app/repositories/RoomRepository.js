@@ -17,11 +17,14 @@ class RoomRepository {
       {relatingUserId: relatedUserId, relatedUserId: relatingUserId}
     ]});
   }
-  async getAllRoomsByFacebookId(facebookId){
+  async getAllRoomsByUserId(id){
     return await this.RoomModel.find({$or: [
-      {relatingUserId: facebookId},
-      {relatedUserId: facebookId},
+      {relatingUserId: id},
+      {relatedUserId: id},
     ]});
+  }
+  async getRoomById(id){
+    return await this.RoomModel.findById(id);
   }
 }
 

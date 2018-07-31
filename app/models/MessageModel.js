@@ -4,13 +4,12 @@ const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
   roomId: { // equal friend Id
-    // type: Schema.Types.ObjectId, 
-    type: String, // Change this when login with user name password
+    type: Schema.Types.ObjectId, 
     ref: "Room",
     required: true
   }, 
-  sender: { // facebookId
-    type: String,
+  sender: { 
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true
   },

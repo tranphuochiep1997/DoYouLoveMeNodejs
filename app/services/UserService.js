@@ -1,39 +1,35 @@
 const UserRepository = require('../repositories/UserRepository');
+const checkObjectId = require("../helpers/CheckObjectId");
 
 class UserService {
   constructor(){
     this.UserRepository = new UserRepository();
   }
-  async createNewUser(body){
+  async updateUserById(req){
     try {
-      let {facebookId} = body;
-      // Check existed User
-      const existedUser = await this.UserRepository.getByFacebookId(facebookId);
-      if (existedUser) {
-        return errorCode.user_existed;
+      const id = req.params.id;
+      const userId = req.userId;
+      if (id !== userId){
+        return errorCode.invalid_token;
       }
-      const createdUser = await this.UserRepository.add(body);
-      if (!createdUser) {
-        return errorCode.unexpected_error;
+      if (!checkObjectId(id)){
+        return errorCode.user_not_exist;
       }
-      return {
-        error: errorCode.success.error, 
-        message: errorCode.success.message,
-        data: createdUser
-      } ;
-    }catch(err){
-      console.log(err);
-      return errorCode.unexpected_error;
-    }
-  }
-  async updateUserByFacebookId(id, body){
-    try {
-      let updatedUser = await this.UserRepository.updateByFacebookId(id, body);
+      let updatedUser = await this.UserRepository.updateUserById(id, req.body);
       if (updatedUser){
         let success = {
           error: errorCode.success.error,
           message: errorCode.success.message,
-          data: updatedUser
+          data: {
+            _id: updatedUser._id,
+            email: updatedUser.email,
+            name: updatedUser.name,
+            about: updatedUser.about,
+            status: updatedUser.status,
+            birthday: updatedUser.birthday,
+            gender: updatedUser.gender,
+            picture: updatedUser.picture
+          }
         };
         return success;
       }
@@ -43,27 +39,38 @@ class UserService {
       return errorCode.unexpected_error;
     }
   }
-  async getUserByFacebookId(id){
+  async getUserById(req){
     try {
-      const user = await this.UserRepository.getByFacebookId(id);
-      if (!user){
+      if (!checkObjectId(req.params.id)){
         return errorCode.user_not_exist;
       }
-      let success = {
-        error: errorCode.success.error,
-        message: errorCode.success.message,
-        data: user
+      let user = await this.UserRepository.getUserById(req.params.id);
+      if (user){
+        let success = {
+          error: errorCode.success.error,
+          message: errorCode.success.message,
+          data: {
+            _id: user._id,
+            email: user.email,
+            name: user.name,
+            about: user.about,
+            status: user.status,
+            birthday: user.birthday,
+            gender: user.gender,
+            picture: user.picture
+          }
+        };
+        return success;
       }
-      return success;
-    } catch(err){
+      return errorCode.user_not_exist;
+    }catch(err){
       console.log(err);
       return errorCode.unexpected_error;
     }
-    
   }
-  async getAllUser(page){
+  async getAllUser(req){
     try {
-      const users = await this.UserRepository.getAll(page);
+      const users = await this.UserRepository.getAll({page: req.query.page, search: req.query.search});
       let success = {
         error: errorCode.success.error,
         message: errorCode.success.message,
@@ -77,5 +84,4 @@ class UserService {
     
   }
 }
-
 module.exports = UserService;

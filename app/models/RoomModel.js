@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const roomSchema = new Schema({
-  relatingUserId: { // facebookId
-    type: String,
+  relatingUserId: { // UserId
+    type: Schema.Types.ObjectId,
     ref: "User",
     index: true
   },
-  relatedUserId: { // facebookId
-    type: String,
+  relatedUserId: { // UserId
+    type: Schema.Types.ObjectId,
     ref: "User",
     index: true
   }

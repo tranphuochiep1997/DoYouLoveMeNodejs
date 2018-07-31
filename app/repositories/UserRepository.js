@@ -1,42 +1,43 @@
 const UserModel = require("../models/UserModel");
-let {LIMIT} = require('../../config');
-const getPictureUrlFacebook = require("../helpers/getPictureUrlFacebook");
+const {LIMIT} = require('../../config');
+const bcrypt = require("bcryptjs");
+const {DEFAULT_IMG} = require("../../config");
 
 class UserRepository {
   constructor(){
     this.UserModel = UserModel;
   }
-  async add({name = "", facebookId, about="", status="", birthday = null, gender = null, email=null, picture=null}){
-    return await this.UserModel.create({
-      name,
-      facebookId,
-      about,
-      status,
-      birthday,
-      gender, // 0: female, 1: male, 2: undefined
-      email,
-      picture: picture || getPictureUrlFacebook(facebookId)
-    });
+  async add({email, password, name = "", about="", status="", birthday = "", gender = "", picture=""}){
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      return await this.UserModel.create({
+        email,
+        password: hashedPassword,
+        name,
+        about,
+        status,
+        birthday,
+        gender, 
+        picture: picture || DEFAULT_IMG
+      });
+    } catch(err){
+      console.log(err);
+    }
   }
-  async getById(id){
+  async getUserById(id){
     return await this.UserModel.findById(id);
   }
-  async getByFacebookId(facebookId){
-    return await this.UserModel.findOne({facebookId: facebookId});
+  async getUserByEmail(email){
+    return await this.UserModel.findOne({email});
   }
-  async getAll(page){
-    if (!page){
-      LIMIT = 0;
-      page = 0;
+  async getAll({page=0, search=""}){
+    if (search.trim()){
+      return await this.UserModel.find({name: {$regex: search, $options: 'i'}}, "-password -email", {limit: LIMIT, skip: page*LIMIT});
     }
-    return await this.UserModel.find({}, null, {limit: LIMIT, skip: page*LIMIT});
+    return await this.UserModel.find({}, "-password -email", {limit: LIMIT, skip: page*LIMIT});
   }
-  async update(id, user){
-    return await this.UserModel.findByIdAndUpdate(id, user);
-  }
-  async updateByFacebookId(facebookId, user){
-    let {facebookId: x, ...userWithoutFacebookId} = user;
-    return await this.UserModel.findOneAndUpdate({facebookId: facebookId}, userWithoutFacebookId, {new: true});
+  async updateUserById(id, user){
+    return await this.UserModel.findByIdAndUpdate(id, user, {new: true});
   }
 }
 

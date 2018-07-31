@@ -3,16 +3,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  password: String,
   name: String,
   about: String,
   status: String,
-  facebookId: {
-    type: String,
-    unique: true
-  },
   birthday: Date,
-  email: String,
-  gender: Number, // 0: female, 1: male, 2: undefined
+  gender: String, 
   picture: String
 }, {collection: "User"});
 

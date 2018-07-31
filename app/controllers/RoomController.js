@@ -7,7 +7,7 @@ class RoomController extends Controller {
     this.RoomService = new RoomService;
   }
   async getRoomByPairOfUserId(req, res){
-    let result = await this.RoomService.getRoomByPairOfUserId(req.query);
+    let result = await this.RoomService.getRoomByPairOfUserId({relatingUserId: req.userId, relatedUserId: req.params.relatedUserId});
     if (!result.error){
       return this.successResponse(res, result);
     }

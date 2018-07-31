@@ -1,22 +1,24 @@
 const RoomRepository = require('../repositories/RoomRepository');
 const UserRepository = require("../repositories/UserRepository");
-
+const checkObjectId = require("../helpers/CheckObjectId");
 class RoomService {
   constructor(){
     this.RoomRepository = new RoomRepository();
     this.UserRepository = new UserRepository();
   }
-  async getRoomByPairOfUserId(pairOfUserId){
+  async getRoomByPairOfUserId({relatingUserId, relatedUserId}){
     try {
-      const {relatingUserId, relatedUserId} = pairOfUserId;
+      if (!checkObjectId(relatingUserId) || !checkObjectId(relatedUserId)){
+        return errorCode.user_not_exist;
+      }
       let room = await this.RoomRepository.getRoomByPairOfUserId({relatingUserId, relatedUserId});
       if (room) {
         let success = errorCode.success;
         success.data = room;
         return success;
       }
-      const relatingUser = await this.UserRepository.getByFacebookId(relatingUserId);
-      const relatedUser = await this.UserRepository.getByFacebookId(relatedUserId);
+      const relatingUser = await this.UserRepository.getUserById(relatingUserId);
+      const relatedUser = await this.UserRepository.getUserById(relatedUserId);
       if (!relatingUser || !relatedUser) {
         return errorCode.user_not_exist;
       }

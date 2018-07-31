@@ -1,12 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-const {PORT_CONFIG, MONGODB_URL} = require('./config');
+const {PORT_CONFIG, MONGODB_URL, SECRET_KEY} = require('./config');
 const PORT = process.env.PORT || PORT_CONFIG;
 const trimParam = require('./app/middlewares/TrimParameter');
 const cors = require('cors');
 const app = express();
 require('./app/helpers/errorCode');
+const jwt = require("jsonwebtoken");
 
 //config server chat
 const server = require('http').createServer(app);
@@ -31,6 +32,7 @@ const userRouter = require("./routes/UserRouter");
 const friendRouter = require('./routes/FriendRouter');
 const messageRouter = require("./routes/MessageRouter");
 const roomRouter = require("./routes/RoomRouter");
+const authRouter = require("./routes/AuthRouter");
 
 //Set up mongoose connection
 mongoose.connect(MONGODB_URL, {useNewUrlParser: true});
@@ -52,6 +54,7 @@ app.use("/api/users", userRouter);
 app.use("/api/friends", friendRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/rooms", roomRouter);
+app.use("/api", authRouter);
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -60,8 +63,17 @@ app.use(function(err, req, res, next) {
 
 // Socket
 io.use((socket, next) => {
-  if (socket.handshake.query.userId) return next();
-  next(new Error('undefined_userId_error'));
+  const query = socket.handshake.query;
+  if (query && query.token){
+    jwt.verify(query.token, SECRET_KEY, (err, payload)=>{
+      if (err){
+        return next(new Error('Authentication error'));
+      }
+      socket.handshake.query.userId = payload._id;
+      return next();
+    })
+  }
+  next(new Error('Authentication error'));
 });
 
 io.on("connection", async (socket)=>{
@@ -74,7 +86,7 @@ io.on("connection", async (socket)=>{
 
   socket.on("SEND_MESSAGE", ({message, roomId}) =>{
     messageRepository.add({roomId, body: message, sender: userId});
-    socket.broadcast.to(roomId).emit("RECEIVE_MESSAGE", message);
+    socket.to(roomId).emit("RECEIVE_MESSAGE", message);
   });
 
   socket.on("disconnect", ()=>{

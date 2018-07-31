@@ -7,7 +7,7 @@ class MessageController extends Controller {
     this.MessageService = new MessageService;
   }
   async getAllMessagesByRoomId(req, res){
-    let result = await this.MessageService.getAllMessagesByRoomId(req.query.roomId);
+    let result = await this.MessageService.getAllMessagesByRoomId(req);
     if (!result.error){
       return this.successResponse(res, result);
     }

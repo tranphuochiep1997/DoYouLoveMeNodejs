@@ -1,4 +1,5 @@
 const MessageModel = require("../models/MessageModel");
+const {LIMIT_MESSAGE} = require('../../config');
 
 class MessageRepository {
   constructor(){
@@ -14,8 +15,8 @@ class MessageRepository {
   async getById(id){
     return await this.MessageModel.findById(id);
   }
-  async getAllMessagesByRoomId(roomId){
-    return await this.MessageModel.find({roomId: roomId}, null, {sort: {_id: 1}});
+  async getAllMessagesByRoomId({roomId, page=0}){
+    return await this.MessageModel.find({roomId: roomId}, null, {limit: LIMIT_MESSAGE, skip: page*LIMIT_MESSAGE, sort: {_id: -1}});
   }
   async update(id, body){
     return await this.MessageModel.findByIdAndUpdate(id, body);
