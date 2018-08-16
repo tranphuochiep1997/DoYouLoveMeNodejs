@@ -17,8 +17,8 @@ const io = require('socket.io').listen(server, {
 });
 
 
-server.listen(PORT, function() {
-  console.log(`Server is listening on port ${PORT}`);
+server.listen(process.env.PORT || PORT_CONFIG, function() {
+  console.log(`Server is listening on port ${process.env.PORT || PORT_CONFIG}`);
 });
 
 // -- Import repository
